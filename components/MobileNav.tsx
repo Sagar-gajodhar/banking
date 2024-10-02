@@ -37,7 +37,7 @@ const MobileNav = ({user} : MobileNavProps)=>{
                         height={34} 
                         alt="Horizon LOGO" className="size-[24px] max-xl:size-14"/>
                     <h1 className="text-26 font-ibm-plex-serif font-bold text-black-1">Horizon</h1>
-                </Link>
+                    </Link>
 
                 <div className="mobilenav-sheet">
                     <SheetClose asChild>
