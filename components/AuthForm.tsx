@@ -23,12 +23,15 @@ import { authFormSchema } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
+import { signIn , signUp } from "@/lib/actions/user_action";
+
 const AuthForm = ({type} : {type : string})=>{
 
     const router = useRouter();
     
     const formSchema = authFormSchema(type);
     
+    const [user , setUser] = useState(null);
     const [loading , setLoading] = useState(false);
       // 1. Define your form.
       const form = useForm<z.infer<typeof formSchema>>({
@@ -39,22 +42,25 @@ const AuthForm = ({type} : {type : string})=>{
       })
      
       // 2. Define a submit handler.
-      async function onSubmit(values: z.infer<typeof formSchema>) {
+      async function onSubmit(data: z.infer<typeof formSchema>) {
         // Do something with the form values.
         // ✅ This will be type-safe and validated.
         setLoading(true);
         try{
             if(type == 'sign-up')
             {
-                // const newUser = await signUp(data); 
+                const newUser = await signUp(data); 
+                if(newUser){
+                    setUser(newUser)
+                    console.log("User Created Successfully",newUser)
+                }else{
+                    console.log("SignUp Failed")
+                }
             }
             if(type == 'sign-in')
             {
-                // const response = await SignIn({
-                //     email : values.email,
-                //     password : values.password
-                // })
-                // if(response) router.push('/')
+                const response = await signIn(data.email,data.password);
+                if(response) router.push('/')
             }
         }catch(err){
             console.log(err)
@@ -63,7 +69,7 @@ const AuthForm = ({type} : {type : string})=>{
         }
       }
 
-    const [user , setUser] = useState(null);
+
 
     return (
         <section className="auth-form">
@@ -92,27 +98,27 @@ const AuthForm = ({type} : {type : string})=>{
                 {type === 'sign-up' && (
                     <>
                         <div className="flex gap-4">
-                            <CustomFiled form={form} name="firstName" label="First Name" placeholder="First Name" type="text"/>
-                            <CustomFiled form={form} name="last Name" label="Last Name" placeholder="last Name" type="text"/>
+                            <CustomFiled control={form.control} name="firstName" label="First Name" placeholder="First Name" type="text"/>
+                            <CustomFiled control={form.control} name="lastName" label="Last Name" placeholder="last Name" type="text"/>
                         </div>
                         
-                        <CustomFiled form={form} name="address" label="Address" placeholder="Enter your Address" type="text"/>
-                        <CustomFiled form={form} name="city" label="City" placeholder="Indore" type="text"/>
+                        <CustomFiled control={form.control} name="address" label="Address" placeholder="Enter your Address" type="text"/>
+                        <CustomFiled control={form.control} name="city" label="City" placeholder="Indore" type="text"/>
 
                         <div className="flex gap-4">
-                            <CustomFiled form={form} name="state" label="State" placeholder="Madhya Pradesh" type="text"/>
-                            <CustomFiled form={form} name="pincode" label="Pin Code" placeholder="452016" type="text"/>
+                            <CustomFiled control={form.control} name="state" label="State" placeholder="Madhya Pradesh" type="text"/>
+                            <CustomFiled control={form.control} name="pincode" label="Pin Code" placeholder="452016" type="text"/>
                         </div>
                         
                         <div className="flex gap-4">
-                            <CustomFiled form={form} name="dateOfBirth" label="Date Of Birth" placeholder="DD-MM-YYYY" type="text"/>
-                            <CustomFiled form={form} name="ssn" label="SSN" placeholder="Example-1234" type="text"/>
+                            <CustomFiled control={form.control} name="dateOfBirth" label="Date Of Birth" placeholder="DD-MM-YYYY" type="text"/>
+                            <CustomFiled control={form.control} name="ssn" label="SSN" placeholder="Example-1234" type="text"/>
                         </div>
                     </>
                 )}
 
-                <CustomFiled form={form} name="email" label="Email" placeholder="Enter your Email" type="text"/>
-                <CustomFiled form={form} name="Password" label="Password" placeholder="Enter your Password" type="password"/>
+                <CustomFiled control={form.control} name="email" label="Email" placeholder="Enter your Email" type="text"/>
+                <CustomFiled control={form.control} name="password" label="Password" placeholder="Enter your Password" type="password"/>
                 <div className="flex flex-col w-full">
                     <Button type="submit" className="form-btn" disabled={loading} >
                     {loading?(

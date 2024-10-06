@@ -15,9 +15,10 @@ import {
     SheetTrigger,
   } from "@/components/ui/sheet"
 import Image from "next/image";
+import Footer from "./Footes";
   
 
-const MobileNav = ({user} : MobileNavProps)=>{
+const   MobileNav = ({user} : MobileNavProps)=>{
     const pathname = usePathname();
     return (<section>
                 <Sheet>
@@ -61,10 +62,9 @@ const MobileNav = ({user} : MobileNavProps)=>{
                             })}
                         </nav>
                     </SheetClose> 
+
+                    <Footer user={user} type="mobile"/ >
                 </div>
-
-
-
                 </SheetContent>
                 </Sheet>
     </section>)
