@@ -23,7 +23,8 @@ import { authFormSchema } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-import { signIn , signUp } from "@/lib/actions/user_action";
+import { signIn , signUp } from "@/lib/actions/user.actions";
+import PlaidLink from "./PlaidLink";
 
 const AuthForm = ({type} : {type : string})=>{
 
@@ -49,7 +50,20 @@ const AuthForm = ({type} : {type : string})=>{
         try{
             if(type == 'sign-up')
             {
-                const newUser = await signUp(data); 
+                const userData = {
+                    email: data.email,
+                    password: data.password,
+                    firstName: data.firstName!,
+                    lastName: data.lastName!,
+                    address1: data.address!,
+                    state: data.state!,
+                    postalCode: data.postalCode!,
+                    dateOfBirth: data.dateOfBirth!,
+                    ssn: data.ssn!,
+                    city:data.city!
+                }
+
+                const newUser = await signUp(userData); 
                 if(newUser){
                     setUser(newUser)
                     console.log("User Created Successfully",newUser)
@@ -59,7 +73,7 @@ const AuthForm = ({type} : {type : string})=>{
             }
             if(type == 'sign-in')
             {
-                const response = await signIn(data.email,data.password);
+                const response = await signIn({email : data.email, password : data.password});
                 if(response) router.push('/')
             }
         }catch(err){
@@ -91,7 +105,9 @@ const AuthForm = ({type} : {type : string})=>{
                     </h1>
                 </div>
             </header>
-            {user ? (<div className="flex flex-col gap-4"></div>): <>
+            {user ? (<div className="flex flex-col gap-4">
+                <PlaidLink user={user} variant="primary"/>
+            </div>): <>
                 <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 
@@ -107,11 +123,11 @@ const AuthForm = ({type} : {type : string})=>{
 
                         <div className="flex gap-4">
                             <CustomFiled control={form.control} name="state" label="State" placeholder="Madhya Pradesh" type="text"/>
-                            <CustomFiled control={form.control} name="pincode" label="Pin Code" placeholder="452016" type="text"/>
+                            <CustomFiled control={form.control} name="postalCode" label="Pin Code" placeholder="452016" type="text"/>
                         </div>
                         
                         <div className="flex gap-4">
-                            <CustomFiled control={form.control} name="dateOfBirth" label="Date Of Birth" placeholder="DD-MM-YYYY" type="text"/>
+                            <CustomFiled control={form.control} name="dateOfBirth" label="Date Of Birth" placeholder="YYYY-MM-DD" type="text"/>
                             <CustomFiled control={form.control} name="ssn" label="SSN" placeholder="Example-1234" type="text"/>
                         </div>
                     </>
